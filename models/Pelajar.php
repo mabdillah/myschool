@@ -44,6 +44,7 @@ class Pelajar extends \yii\db\ActiveRecord
     {
         return 'pelajar';
     }
+	
 
     /**
      * @inheritdoc
@@ -51,7 +52,7 @@ class Pelajar extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['alamat', 'nama_pelajar', 'poskod','jantina','no_mykid','no_sijilLahir','no_mykadBapa','no_mykadIbu','nama_bapa','nama_ibu','id_status'], 'required'],
+            [['alamat', 'nama_pelajar', 'poskod','jantina','no_mykid','no_sijilLahir','id_status'], 'required'],
             [['sesi', 'id_pelajar_kelas', 'poskod','rumah_sukan','id_status'], 'integer'],
             [['nama_pelajar', 'alamat','alamat2', 'badan_beruniform', 'persatuan', 'sukan', 'catatan'], 'string', 'max' => 255],
             [['jantina', 'negeri', 'no_telBapa', 'warganegara', 'kaum'], 'string', 'max' => 12],
@@ -74,7 +75,7 @@ class Pelajar extends \yii\db\ActiveRecord
             'no_mykid' => 'No Mykid',
             'no_sijilLahir' => 'No Sijil Lahir',
             'sesi' => 'Sesi',
-            'id_pelajar_kelas' => 'Id Pelajar Kelas',
+            'id_pelajar_kelas' => 'Kelas',
             'alamat' => 'Alamat',
             'alamat2' => 'Alamat 2 (Kawasan Van)',
             'poskod' => 'Poskod',
@@ -162,6 +163,19 @@ class Pelajar extends \yii\db\ActiveRecord
 		$txt .= '</tbody></table>';
 		return $txt;
     }
+	public function afterSave($insert, $changedAttributes)
+    {
+		parent::afterSave($insert, $changedAttributes);
+		if($this->id_pelajar_kelas > 0){
+			$data = Yii::$app->getDb()->createCommand("SELECT pelajar_kelas.id FROM `pelajar_kelas` inner join kelas on kelas.id=pelajar_kelas.id_kelas where kelas.id_sesi = (select id from sesi where tahun=YEAR(curdate())) and pelajar_kelas.id_pelajar='". $this->id ."' ")->queryOne();
+			if($data['id']>0){
+				Yii::$app->getDb()->createCommand("update pelajar_kelas set id_kelas ='".$this->id_pelajar_kelas ."' where id='". $data['id'] ."'; ")->execute();
+			}else{
+				Yii::$app->getDb()->createCommand("insert into pelajar_kelas (id_kelas,id_pelajar) VALUES ('".$this->id_pelajar_kelas ."','". $this->id ."'); ")->execute();
+			}
+		}
+		return true;
+	}
 //    public function getnama_matapelajaran()
 //    {
 //

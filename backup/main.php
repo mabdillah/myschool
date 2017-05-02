@@ -30,8 +30,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'MySchool',
-		//'brandLabel' => Html::img($asset->baseUrl . 'logo.png',['height'=>'50']),
+        'brandLabel' => 'MDI',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
@@ -72,11 +71,11 @@ AppAsset::register($this);
 		//if(!Yii::$app->user->can("guest")) 
 		$identity=Yii::$app->user->identity->username;                
 		//else 
-		//$identity=$pemohon->findPemohon(Yii::$app->user->id,"nama");              
-		/*$menuItems[] = [                               
+		//$identity=$pemohon->findPemohon(Yii::$app->user->id,"nama");            
+		$menuItems[] = [                               
 			'label' => 'Kemaskini Katalaluan',  
 			'url' => ['/user/settings/account'],                    
-		];*/
+		];  
 		$menuItems[] = [                               
 			'label' => 'Log Keluar (' . ucwords(strtolower($identity)) . ')',                                      
 			'url' => ['/site/logout'],                   
@@ -122,7 +121,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; 2017 <a href="http://www.mysoftcare.com" target="_blank">Mysoftcare Solution Sdn. Bhd.</a></p>
+        <p class="pull-left">&copy; 2016 Madrasah Darul Iman</p>
 
         <p class="pull-right">Version 1.0</p>
     </div>

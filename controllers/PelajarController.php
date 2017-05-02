@@ -111,7 +111,12 @@ class PelajarController extends Controller
         $model = new Pelajar();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+			Yii::$app->session->setFlash('success', "Maklumat berjaya disimpan.");
+			if(Yii::$app->request->post('btn')==1){
+				return $this->redirect(['create']);
+			}else{
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -130,8 +135,12 @@ class PelajarController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			Yii::$app->session->setFlash('success', "Maklumat berjaya disimpan.");
-            return $this->redirect(['view', 'id' => $model->id]);
+			Yii::$app->session->setFlash('success', "Maklumat berjaya dikemaskini.");
+			if(Yii::$app->request->post('btn')==1){
+				return $this->redirect(['update', 'id' => $model->id]);
+			}else{
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
         } else {
             $dataProvider = new ActiveDataProvider([
                 'query' => $model->getKelasMp(),//filter pizzaNotes. dapatkan query dr fungsi getPizzaNotes di model/Pizza

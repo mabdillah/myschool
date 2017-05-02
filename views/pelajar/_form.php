@@ -95,13 +95,44 @@ $t1="";$t2="";
 	$t3 .= $form->field($model, 'rumah_sukan')->widget(Select2::classname(),['data' => (ArrayHelper::map(app\models\RefRumahsukan::find()->all(),'id','keterangan')),'pluginOptions'=>['allowClear'=>true],'options' => ['placeholder' => 'Sila Pilih',]]);
 	
 	$t3 .= '</div>';
+	$t3 .= '</div>';
 
+	$t4 = '<div class="row">';
+	if(!$model->isNewRecord){
+		
+		$datakelaslama = Yii::$app->getDb()->createCommand("SELECT kelas.id FROM `pelajar_kelas` inner join kelas on kelas.id=pelajar_kelas.id_kelas where kelas.id_sesi = (select id from sesi where tahun=YEAR(curdate())) and pelajar_kelas.id_pelajar='".$model->id ."'")->queryOne();
+		if($datakelaslama['id']>0){
+			$model->id_pelajar_kelas = $datakelaslama['id'];
+		}
+	}
+	if(\Yii::$app->user->can('Guru')){
+		$datakelas = Yii::$app->getDb()->createCommand("SELECT kelas.id,concat(tingkatan,' - ',keterangan,' (',tahun,')') kelasinfo FROM `kelas` inner join sesi on kelas.id_sesi = sesi.id inner join ref_kelas on nama_kelas=ref_kelas.id WHERE id_guru IN (select id from guru where id_guru = '". Yii::$app->user->id ."') AND tahun >= YEAR(CURDATE()) ORDER by tahun,tingkatan ASC")->queryAll();
+	}else{
+		$datakelas = Yii::$app->getDb()->createCommand("SELECT kelas.id,concat(tingkatan,' ',keterangan,' - ',tahun) kelasinfo FROM `kelas` inner join sesi on kelas.id_sesi = sesi.id inner join ref_kelas on nama_kelas=ref_kelas.id WHERE tahun >= YEAR(CURDATE()) order by tahun,tingkatan ASC")->queryAll();
+	}
+	$t4 .= '<div class="col-sm-8">';
+	$t4 .= $form->field($model, 'id_pelajar_kelas')->widget(Select2::classname(),
+		[
+			'data' => ArrayHelper::map($datakelas,'id', 'kelasinfo'),
+			'pluginOptions'=>[
+				'allowClear'=>true
+			],
+			'options' => [
+				'placeholder' => 'Carian Kelas'
+			],
+			'disabled'=>$id_kelas > 0 ? true : false
+		])->label('Kelas Baru');
+	$t4 .= '</div>';
+	
+	$t4 .= '</div>';
+	
 	
 	echo TabsX::widget([
             'items' => [
 				['label' => '<i class="glyphicon glyphicon-user"></i> Peribadi','content' => $t1,'active' =>true],
 				['label' => '<i class="glyphicon glyphicon-user"></i> Ibu Bapa','content' => $t2],
 				['label' => '<i class="glyphicon glyphicon-user"></i> Kokurikulum','content' => $t3],
+				['label' => '<i class="glyphicon glyphicon-user"></i> Kelas','content' => $t4],
 			], 
             'position' => TabsX::POS_ABOVE,
             'align' => TabsX::ALIGN_LEFT,
@@ -111,7 +142,8 @@ $t1="";$t2="";
 	?>
 	<br/>
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Simpan' : 'Kemaskini', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Simpan & Tambah Baru' : 'Simpan', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary','value'=>1,'name'=>'btn']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Simpan dan Lihat' : 'Simpan dan Lihat', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary','value'=>2,'name'=>'btn']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

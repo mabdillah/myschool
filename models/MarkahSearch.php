@@ -15,12 +15,14 @@ class MarkahSearch extends Markah
     /**
      * @inheritdoc
      */
+	 public $darjah;
 	 public $tahun;
 	 public $peperiksaan;
+	 public $kelas;
     public function rules()
     {
         return [
-            [['id', 'id_pelajar', 'id_exam','peperiksaan'], 'integer'],
+            [['id', 'id_pelajar', 'id_exam','peperiksaan','darjah','kelas'], 'integer'],
             [['markah1', 'markah2', 'jumlah', 'gred','tahun'], 'safe'],
         ];
     }
@@ -49,6 +51,7 @@ class MarkahSearch extends Markah
 		->orderBy('sum(jumlah) DESC');
 		
 		$query->joinWith(['exam']);
+		$query->join('INNER JOIN', 'kelas','kelas.id=exam.id_kelas');
 
         // add conditions that should always apply here
 
@@ -72,6 +75,9 @@ class MarkahSearch extends Markah
             'id_exam' => $this->id_exam,
             'exam.tahun' => $this->tahun,
             'exam.description' => $this->peperiksaan,
+            'kelas.tingkatan' => $this->darjah,
+            'kelas.nama_kelas' => $this->kelas,
+            //'exam.id_kelas' => $this->kelas,
         ]);
 		
 

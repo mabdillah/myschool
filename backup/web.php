@@ -5,14 +5,14 @@ $params = require(__DIR__ . '/params.php');
 use \yii\web\Request;
 $baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 $config = [
-    'id' => 'myschool',
+    'id' => 'mdi',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
 	'language'=>'ms', // tukar language
     'components' => [
 		'session' => [
 			'class' => '\yii\web\Session',
-			'name' => 'myschool',
+			'name' => 'mdi',
 		],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -57,6 +57,8 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'rules' => [
+            ],
         ],
         
 		// tambah untuk paparan format tarikh 
@@ -164,13 +166,13 @@ $config = [
 	'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
-            '*',
+            //'*',
             //'admin/*',
             'site/*',
             'user/registration/*',
 			'user/recovery/request',
+			//'debug/*',
 			'user/settings/account',
-			'debug/*',
 			'datecontrol/*',
         ]
     ],

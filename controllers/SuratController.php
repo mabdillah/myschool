@@ -9,4 +9,8 @@ class SuratController extends \yii\web\Controller
 	{
 		return $this->render('resit',['id'=>$id]);
 	}
+	public function actionSumbangan($id)
+	{
+		return $this->render('sumbangan',['id'=>$id]);
+	}
 }

@@ -36,6 +36,12 @@ class MarkahController extends Controller
     public function actionIndex()
     {
         $searchModel = new MarkahSearch();
+		if(!isset(Yii::$app->request->queryParams['MarkahSearch']['darjah'])){
+			$searchModel->darjah = 1;
+			$darjah = 1;
+		}else{
+			$darjah = Yii::$app->request->queryParams['MarkahSearch']['darjah'];
+		}
 		if(!isset(Yii::$app->request->queryParams['MarkahSearch']['tahun'])){
 			$searchModel->tahun = date('Y');
 			$tahun = date('Y');
@@ -56,6 +62,7 @@ class MarkahController extends Controller
             'dataProvider' => $dataProvider,
             'tahun' => $tahun,
             'periksa' => $periksa,
+            //'darjah' => $darjah,
         ]);
     }
     public function actionIndexMarkah()
